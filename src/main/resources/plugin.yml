@@ -1,0 +1,4 @@
+name: WaterdogTools
+main: network.ycc.waterdog.WaterdogTools
+version: 0.1
+author: Yesdog
