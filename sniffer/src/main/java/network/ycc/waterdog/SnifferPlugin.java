@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -19,14 +20,14 @@ import javax.script.ScriptEngine;
 import java.io.FileReader;
 import java.util.function.Function;
 
-public class WaterdogTools extends Plugin implements Listener {
+public class SnifferPlugin extends Plugin implements Listener {
     @Override
     public void onEnable() {
         getProxy().getPluginManager().registerListener(this, this);
     }
 
     @EventHandler
-    public void onIntrospection(ServerChannelTapEvent event) {
+    public void onServerTap(ServerChannelTapEvent event) {
         event.getChannel().pipeline().addLast(new IntrospectionInstance(event.getUser()));
     }
 
@@ -38,7 +39,7 @@ public class WaterdogTools extends Plugin implements Listener {
 
         IntrospectionInstance(ProxiedPlayer user) {
             this.user = user;
-            getProxy().getPluginManager().registerListener(WaterdogTools.this, this);
+            getProxy().getPluginManager().registerListener(SnifferPlugin.this, this);
             reload();
         }
 

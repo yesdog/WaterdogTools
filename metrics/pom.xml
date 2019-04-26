@@ -5,18 +5,18 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>network.ycc.waterdog</groupId>
-    <artifactId>WaterdogTools-parent</artifactId>
+    <artifactId>WaterdogTools-metrics</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>Waterdog Tools</name>
     <description>Useful plugins for Waterdog</description>
     <url>https://github.com/yesdog/WaterdogTools</url>
-    <packaging>pom</packaging>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.build.timestamp.format>HHmm-MMddyyyy</maven.build.timestamp.format>
-    </properties>
+    <parent>
+        <groupId>network.ycc.waterdog</groupId>
+        <artifactId>WaterdogTools-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <scm>
         <url>https://github.com/yesdog/WaterdogTools/</url>
@@ -25,38 +25,35 @@
         <tag>HEAD</tag>
     </scm>
 
-    <modules>
-        <module>sniffer</module>
-        <module>metrics</module>
-    </modules>
-
-    <repositories>
-        <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.org/repository/maven-public</url>
-        </repository>
-    </repositories>
-
-    <ciManagement>
-        <system>jenkins</system>
-        <url>http://ci.codemc.org/job/yesdog/job/WaterdogTools</url>
-    </ciManagement>
-
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/yesdog/WaterdogTools/issues</url>
-    </issueManagement>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>codemc-snapshots</id>
-            <url>https://repo.codemc.org/repository/maven-snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>codemc-releases</id>
-            <url>https://repo.codemc.org/repository/maven-releases</url>
-        </repository>
-    </distributionManagement>
+    <dependencies>
+        <dependency>
+            <groupId>network.ycc</groupId>
+            <artifactId>raknet</artifactId>
+            <version>0.6-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>network.ycc.waterdog</groupId>
+            <artifactId>waterdog-api</artifactId>
+            <version>1.14-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_hotspot</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_httpserver</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
