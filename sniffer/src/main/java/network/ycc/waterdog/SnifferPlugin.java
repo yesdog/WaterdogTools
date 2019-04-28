@@ -17,6 +17,7 @@ import network.ycc.waterdog.api.event.ServerChannelTapEvent;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.function.Function;
 
@@ -44,6 +45,7 @@ public class SnifferPlugin extends Plugin implements Listener {
         }
 
         void reload() {
+            loadFailed = true;
             try {
                 engine = new NashornScriptEngineFactory().getScriptEngine("--language=es6");
                 invocable = (Invocable) engine;
@@ -58,9 +60,10 @@ public class SnifferPlugin extends Plugin implements Listener {
                 engine.eval(new FileReader("script.js"));
                 invocable.invokeFunction("init", user);
                 loadFailed = false;
+            } catch (FileNotFoundException e) {
+                getLogger().info("No script.js file found");
             } catch (Throwable e) {
                 e.printStackTrace();
-                loadFailed = true;
             }
         }
 

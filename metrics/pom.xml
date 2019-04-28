@@ -7,7 +7,7 @@
     <groupId>network.ycc.waterdog</groupId>
     <artifactId>WaterdogTools-metrics</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <name>Waterdog Tools</name>
+    <name>Waterdog Tools Metrics</name>
     <description>Useful plugins for Waterdog</description>
     <url>https://github.com/yesdog/WaterdogTools</url>
 
