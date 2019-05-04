@@ -1,5 +1,6 @@
-# WaterdogTools
+WaterdogTools
 [![Discord Chat](https://img.shields.io/discord/574240965351571477.svg)](https://discord.gg/MhhWfSW)
+=======
 
 Tools for [Waterdog](https://github.com/yesdog/Waterdog) proxy server.
 
