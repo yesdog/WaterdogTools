@@ -8,6 +8,8 @@ Tools for [Waterdog](https://github.com/yesdog/Waterdog) proxy server.
 
 Generate user RakNet metrics using Prometheus.
 
+![graphana graphs](https://i.imgur.com/Ld8QNGP.png)
+
 ## Packet Inspection
 
 Use a JS script that you can change at any time to monitor packets.
