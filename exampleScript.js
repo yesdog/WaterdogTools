@@ -10,7 +10,7 @@ var user;
 
 function init(user0) {
 	user = user0;
-	isPEUser = user.getPendingConnection().getVersion() < -1;
+	isPEUser = !user0 || user.getPendingConnection().getVersion() < -1;
 }
 
 function read(buf) { //clientbound
@@ -18,9 +18,27 @@ function read(buf) { //clientbound
 	const packetId = DefinedPacket.readVarInt(buf);
 	const packetName = reversePacketIdMap[packetId] || "unknown";
 
+	const playerId = user.getServerEntityId();
+
 	switch(packetId) {
 		case CHAT:
-			print(ByteBufUtil.prettyHexDump(buf));
+			//print(ByteBufUtil.prettyHexDump(buf));
+			break;
+		case SET_ATTRIBUTES:
+			var entityId = DefinedPacket.readVarLong(buf);
+			var nEntries = DefinedPacket.readVarInt(buf);
+
+			for(var i = 0 ; i < nEntries ; i++) {
+				buf.readFloatLE(); //min
+				buf.readFloatLE(); //max
+				const value = buf.readFloatLE();
+				buf.readFloatLE(); //default
+				const name = DefinedPacket.readString(buf);
+
+				if(playerId == entityId && name.contains("hunger")) {
+					print("name: " + name + " value: " + value);
+				}
+			}
 			break;
 		case ADD_ITEM_ENTITY:
 			DefinedPacket.readSVarLong(buf);
