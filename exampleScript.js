@@ -13,6 +13,21 @@ function init(user0) {
 	isPEUser = !user0 || user.getPendingConnection().getVersion() < -1;
 }
 
+/*
+
+Packet parsing APIs:
+
+DefinedPacket static methods useful for MC varints/strings:
+https://ci.codemc.org/job/yesdog/job/Waterdog/javadoc/net/md_5/bungee/protocol/DefinedPacket.html
+
+Otherwise, can just use the ByteBuf APIs:
+https://netty.io/4.1/api/io/netty/buffer/ByteBuf.html
+
+*/
+
+/** Fired on raw clientbound packet data.
+	  @param {io.netty.buffer.ByteBuf} data
+*/
 function read(buf) { //clientbound
 	if(!isPEUser || !buf.isReadable()) return;
 	const packetId = DefinedPacket.readVarInt(buf);
@@ -48,7 +63,10 @@ function read(buf) { //clientbound
 	}
 }
 
-function write(buf) { //serverbound
+/** Fired on raw serverbound packet data.
+	  @param {io.netty.buffer.ByteBuf} data
+*/
+function write(buf) { 
 	if(!isPEUser || !buf.isReadable()) return;
 	const packetId = DefinedPacket.readVarInt(buf);
 	const packetName = reversePacketIdMap[packetId] || "unknown";
