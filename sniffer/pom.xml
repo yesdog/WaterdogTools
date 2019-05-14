@@ -28,8 +28,8 @@
     <dependencies>
         <dependency>
             <groupId>network.ycc</groupId>
-            <artifactId>raknet</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <artifactId>netty-raknet-common</artifactId>
+            <version>0.7-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
