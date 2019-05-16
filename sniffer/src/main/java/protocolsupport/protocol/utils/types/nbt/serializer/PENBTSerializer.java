@@ -59,8 +59,8 @@ public class PENBTSerializer extends NBTSerializer<ByteBuf, ByteBuf> {
 		);
 		// Pe has two similar but different formats.
 		if (varint) {
-			registerType(NBTType.INT, 3, stream -> new NBTInt(DefinedPacket.readSVarInt(stream)), (stream, tag) -> DefinedPacket.writeSVarInt(stream, tag.getAsInt()));
-			registerType(NBTType.LONG, 4, stream -> new NBTLong(DefinedPacket.readSVarLong(stream)), (stream, tag) -> DefinedPacket.writeSVarLong(stream, tag.getAsLong()));
+			registerType(NBTType.INT, 3, stream -> new NBTInt(DefinedPacket.readSVarInt(stream)), (stream, tag) -> DefinedPacket.writeSVarInt(tag.getAsInt(), stream));
+			registerType(NBTType.LONG, 4, stream -> new NBTLong(DefinedPacket.readSVarLong(stream)), (stream, tag) -> DefinedPacket.writeSVarLong(tag.getAsLong(), stream));
 			registerType(
 				NBTType.STRING, 8,
 				stream -> {
@@ -68,7 +68,7 @@ public class PENBTSerializer extends NBTSerializer<ByteBuf, ByteBuf> {
 				},
 				(stream, tag) -> {
 					byte[] data = tag.getValue().getBytes(StandardCharsets.UTF_8);
-					DefinedPacket.writeVarInt(stream, data.length);
+					DefinedPacket.writeVarInt(data.length, stream);
 					stream.writeBytes(data);
 				});
 			registerType(
@@ -82,7 +82,7 @@ public class PENBTSerializer extends NBTSerializer<ByteBuf, ByteBuf> {
 				},
 				(stream, tag) -> {
 					byte[] array = tag.getValue();
-					DefinedPacket.writeSVarInt(stream, array.length);
+					DefinedPacket.writeSVarInt(array.length, stream);
 					stream.writeBytes(array);
 				}
 			);
@@ -97,9 +97,9 @@ public class PENBTSerializer extends NBTSerializer<ByteBuf, ByteBuf> {
 				},
 				(stream, tag) -> {
 					int[] array = tag.getValue();
-					DefinedPacket.writeSVarInt(stream, array.length);
+					DefinedPacket.writeSVarInt(array.length, stream);
 					for (int i : array) {
-						DefinedPacket.writeSVarInt(stream, i);
+						DefinedPacket.writeSVarInt(i, stream);
 					}
 				}
 			);
@@ -119,7 +119,7 @@ public class PENBTSerializer extends NBTSerializer<ByteBuf, ByteBuf> {
 				},
 				(stream, tag) -> {
 					writeTagType(stream, tag.getTagsType());
-					DefinedPacket.writeSVarInt(stream, tag.size());
+					DefinedPacket.writeSVarInt(tag.size(), stream);
 					for (NBT value : ((List<NBT>) tag.getTags())) {
 						writeTag(stream, value);
 					}
@@ -211,7 +211,7 @@ public class PENBTSerializer extends NBTSerializer<ByteBuf, ByteBuf> {
 		return (stream, string) -> {
 			byte[] data = string.getBytes(StandardCharsets.UTF_8);
 			if (varint) {
-				DefinedPacket.writeVarInt(stream, data.length);
+				DefinedPacket.writeVarInt(data.length, stream);
 			} else {
 				stream.writeShortLE(data.length);
 			}
