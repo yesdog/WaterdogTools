@@ -29,6 +29,7 @@ public class PERakNetMetrics implements RakNet.MetricsLogger, RakNetMetrics {
 
     final Counter packetsIn = Counter.build().name("packetsIn").help("packetsIn").register();
     final Counter framesIn = Counter.build().name("framesIn").help("framesIn").register();
+    final Counter frameError = Counter.build().name("frameError").help("frameError").register();
     final Counter bytesIn = Counter.build().name("bytesIn").help("bytesIn").register();
     final Counter packetsOut = Counter.build().name("packetsOut").help("packetsOut").register();
     final Counter framesOut = Counter.build().name("framesOut").help("framesOut").register();
@@ -53,6 +54,10 @@ public class PERakNetMetrics implements RakNet.MetricsLogger, RakNetMetrics {
 
     public void framesIn(int i) {
         framesIn.inc(i);
+    }
+
+    public void frameError(int delta) {
+        frameError.inc(delta);
     }
 
     public void bytesIn(int i) {
@@ -103,17 +108,14 @@ public class PERakNetMetrics implements RakNet.MetricsLogger, RakNetMetrics {
         rttGauge.set(n * sPerNs);
     }
 
-    @Override
     public void preCompressionBytes(int i) {
         outPreComp.inc(i);
     }
 
-    @Override
     public void postCompressionBytes(int i) {
         outPostComp.inc(i);
     }
 
-    @Override
     public void preCompressionPacket(int i) {
         outPrePacket.inc(i);
     }

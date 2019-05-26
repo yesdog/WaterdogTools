@@ -7,6 +7,7 @@ import net.md_5.bungee.event.EventHandler;
 import network.ycc.raknet.RakNet;
 import network.ycc.waterdog.api.event.UserChannelTapEvent;
 
+//TODO: configurable prometheus port, and maybe push settings
 public class MetricsPlugin extends Plugin implements Listener {
     @Override
     public void onEnable() {
