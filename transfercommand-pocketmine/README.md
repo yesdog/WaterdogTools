@@ -2,7 +2,7 @@
 
 #### A very simple Library that adds a /transfer command
 
-######How is it working?
+####How is it working?
 You can run `/transfer [ServerName]` to teleport to the server you specified. <br /><br />
 Notice: **Nothing will happen if that server is not registered in the BungeeCord System!**
 
