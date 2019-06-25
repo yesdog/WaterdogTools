@@ -40,5 +40,10 @@ This example would teleport player "TobiasDev" to Server Factions. <br /><br />T
 
 To send the packet, this Method selects a random player who is online on the current server to send the packet. If no one is online, Method call will be dropped and `false` returned.
 
+API::sendMessage() has two arguments:
+`String $player` the name of the target of the message
+`String $message` the message to be sent
+
+
 
 
