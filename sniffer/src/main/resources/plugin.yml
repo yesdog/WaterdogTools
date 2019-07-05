@@ -1,4 +1,4 @@
 name: WaterdogTools-sniffer
 main: network.ycc.waterdog.SnifferPlugin
-version: 0.1
+version: ${buildVersion}
 author: Yesdog

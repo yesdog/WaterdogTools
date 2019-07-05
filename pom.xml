@@ -18,16 +18,10 @@
         <maven.build.timestamp.format>HHmm-MMddyyyy</maven.build.timestamp.format>
     </properties>
 
-    <scm>
-        <url>https://github.com/yesdog/WaterdogTools/</url>
-        <connection>scm:git:git://github.com/yesdog/WaterdogTools.git</connection>
-        <developerConnection>scm:git:git@github.com:yesdog/WaterdogTools.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
     <modules>
         <module>sniffer</module>
         <module>metrics</module>
+        <module>nukkit</module>
     </modules>
 
     <repositories>

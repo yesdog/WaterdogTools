@@ -1,0 +1,9 @@
+name: WaterdogTools
+version: 1.0
+api: ["1.0.5"]
+description: A permissions plugin
+author: Yesdog
+website: https://github.com/yesdog/WaterdogTools
+
+main: network.ycc.waterdog.nukkit.WaterdogAPI
+load: STARTUP

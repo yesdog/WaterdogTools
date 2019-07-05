@@ -1,4 +1,4 @@
 name: WaterdogTools-metrics
 main: network.ycc.waterdog.MetricsPlugin
-version: 0.1
+version: ${buildVersion}
 author: Yesdog
