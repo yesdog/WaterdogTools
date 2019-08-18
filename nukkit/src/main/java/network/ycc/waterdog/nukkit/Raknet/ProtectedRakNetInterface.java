@@ -17,7 +17,10 @@ package network.ycc.waterdog.nukkit.Raknet;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import cn.nukkit.Server;
 import cn.nukkit.network.RakNetInterface;
@@ -26,30 +29,46 @@ import cn.nukkit.raknet.protocol.EncapsulatedPacket;
 public class ProtectedRakNetInterface extends RakNetInterface {
 
 	private List<String> allowedIPs = null;
+	private Set<String> blockedAddresses = new HashSet<String>();
 
 	public ProtectedRakNetInterface(Server server, List<String> allowedIPs) {
 		super(server);
 		this.allowedIPs = allowedIPs;
 	}
 
+	synchronized public void reSetAddresses(List<String> allowedIPs) {
+		this.allowedIPs = allowedIPs;
+		this.clearBans();
+	}
+
 	@Override
 	public void handleEncapsulated(String identifier, EncapsulatedPacket packet, int flags) {
 		String address = address(identifier);
-		if (allowedIPs.contains(address)) {
+		try {
+			if (allowedIPs.contains(address)) {
+				super.handleEncapsulated(identifier, packet, flags);
+				return;
+			}
+		} catch (ConcurrentModificationException e) {
 			super.handleEncapsulated(identifier, packet, flags);
 			return;
 		}
-		this.blockAddress(address);
+		this.addBan(address, true);
 
 	}
 
 	@Override
 	public void openSession(String identifier, String address, int port, long clientID) {
-		if (allowedIPs.contains(address)) {
+		try {
+			if (allowedIPs.contains(address)) {
+				super.openSession(identifier, address, port, clientID);
+				return;
+			}
+		} catch (ConcurrentModificationException e) {
 			super.openSession(identifier, address, port, clientID);
 			return;
 		}
-		this.blockAddress(address, 100000000);
+		this.addBan(address, false);
 	}
 
 	private String address(String identifier) {
@@ -64,6 +83,19 @@ public class ProtectedRakNetInterface extends RakNetInterface {
 			return ret;
 		}
 	}
+	
+	synchronized private void addBan(String address, boolean secondary) {
+		int timeout = secondary ? 300 : 100000000;
+		this.blockedAddresses.add(address);
+		this.blockAddress(address, timeout);
+	}
+	
+	synchronized private void clearBans() {
+		for(String s : this.blockedAddresses) {
+			if(this.allowedIPs.contains(s))
+				this.unblockAddress(s);
+		}
+	}
 
 	@Override
 	public void shutdown() {
@@ -76,4 +108,3 @@ public class ProtectedRakNetInterface extends RakNetInterface {
 	}
 
 }
-
