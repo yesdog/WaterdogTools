@@ -38,10 +38,10 @@ public class WaterdogAPI extends PluginBase {
 
 	@Override
 	public void onEnable() {
-		this.getLogger().info("[WaterdogTools] Starting plugin...");
+		this.getLogger().info("Starting plugin...");
 		this.conf = new WaterdogToolsConfig(this, "config.yml");
 		if (this.conf.isProxyFirewallEnabled()) {
-			this.getLogger().info("[WaterdogTools - Firewall] Enabling Network-Firewall...");
+			this.getLogger().info("[Firewall] Enabling Network-Firewall...");
 			if (!this.conf.isPrimaryFirewallDisabled()) {
 				for (SourceInterface sourceInterface : this.getServer().getNetwork().getInterfaces()) {
 					if (sourceInterface instanceof RakNetInterface) {
@@ -49,19 +49,19 @@ public class WaterdogAPI extends PluginBase {
 						this.getServer().getNetwork().unregisterInterface(sourceInterface);
 					}
 				}
-				this.getLogger().info("[WaterdogTools - Firewall] Shut down all non protected interfaces, OK");
+				this.getLogger().info("[Firewall] Shut down all non protected interfaces, OK");
 				this.getServer().getNetwork().registerInterface(
 						new ProtectedRakNetInterface(this.getServer(), this.conf.getProxyAddresses()));
-				this.getLogger().info("[WaterdogTools - Firewall] Registered Protected RakNet Interface!");
+				this.getLogger().info("[Firewall] Registered Protected RakNet Interface!");
 			} else {
 				this.getLogger()
-						.info("[WaterdogTools - Firewall] Only using secondary protected interface as configured.");
+						.info("[Firewall] Only using secondary protected interface as configured.");
 			}
 			this.getServer().getPluginManager()
 					.registerEvents(new SecondaryProtectedInterface(this.conf.getProxyAddresses()), this);
-			this.getLogger().info("[WaterdogTools - Firewall] Registered secondary Protected Interface!");
+			this.getLogger().info("[Firewall] Registered secondary Protected Interface!");
 		}
-		this.getLogger().info("[WaterdogTools] Done!");
+		this.getLogger().info("Done!");
 	}
 
 	public static void transferPlayer(Player p, String destination) {
