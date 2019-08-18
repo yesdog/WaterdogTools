@@ -53,7 +53,7 @@ public class WaterdogToolsConfig {
 			return this.conf.getBoolean("enable-proxy-firewall");
 		} catch (Exception e) {
 			Server.getInstance().getLogger().critical(
-					"[WaterdogTools - Firewall] Unable to read enable-proxy-firewall from the config. Assuming 'true' to prevent possible damage. Please fix this ASAP!");
+					"[Config] Unable to read enable-proxy-firewall from the config. Assuming 'true' to prevent possible damage. Please fix this ASAP!");
 			return true;
 		}
 
@@ -64,7 +64,7 @@ public class WaterdogToolsConfig {
 			return this.conf.getBoolean("only-use-fallback-firewall");
 		} catch (Exception e) {
 			Server.getInstance().getLogger().critical(
-					"[WaterdogTools - Firewall] Unable to read only-use-fallback-firewall from the config. Assuming 'false' to prevent possible damage. Please fix this ASAP!");
+					"[Config] Unable to read only-use-fallback-firewall from the config. Assuming 'false' to prevent possible damage. Please fix this ASAP!");
 			return false;
 		}
 
@@ -76,12 +76,12 @@ public class WaterdogToolsConfig {
 			ret = this.conf.getStringList("proxy-addresses");
 			if (ret == null) {
 				Server.getInstance().getLogger().critical(
-						"[WaterdogTools - Config] Unable to read proxy firewall addresses! Blocking all connections until this is resolved!");
+						"[Config] Unable to read proxy firewall addresses! Blocking all connections until this is resolved!");
 				return new ArrayList<String>();
 			}
 		} catch (Exception e) {
 			Server.getInstance().getLogger().critical(
-					"[WaterdogTools - Config] An error was encountered trying to read the proxy firewall addresses! Blocking all connections until this is resolved! Error details: "
+					"[Config] An error was encountered trying to read the proxy firewall addresses! Blocking all connections until this is resolved! Error details: "
 							+ e.getMessage());
 			return new ArrayList<String>();
 		}
