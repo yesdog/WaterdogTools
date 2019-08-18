@@ -35,7 +35,7 @@ public class ProtectedRakNetInterface extends RakNetInterface {
 	@Override
 	public void handleEncapsulated(String identifier, EncapsulatedPacket packet, int flags) {
 		String address = address(identifier);
-		if (allowedIPs.contains(identifier)) {
+		if (allowedIPs.contains(address)) {
 			super.handleEncapsulated(identifier, packet, flags);
 			return;
 		}
@@ -45,7 +45,7 @@ public class ProtectedRakNetInterface extends RakNetInterface {
 
 	@Override
 	public void openSession(String identifier, String address, int port, long clientID) {
-		if (allowedIPs.contains(identifier)) {
+		if (allowedIPs.contains(address)) {
 			super.openSession(identifier, address, port, clientID);
 			return;
 		}
@@ -63,6 +63,16 @@ public class ProtectedRakNetInterface extends RakNetInterface {
 			}
 			return ret;
 		}
+	}
+
+	@Override
+	public void shutdown() {
+		super.shutdown();
+	}
+
+	@Override
+	public void emergencyShutdown() {
+		super.emergencyShutdown();
 	}
 
 }

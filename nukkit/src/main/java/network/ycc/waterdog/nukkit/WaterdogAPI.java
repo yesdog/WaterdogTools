@@ -46,6 +46,7 @@ public class WaterdogAPI extends PluginBase {
 				for (SourceInterface sourceInterface : this.getServer().getNetwork().getInterfaces()) {
 					if (sourceInterface instanceof RakNetInterface) {
 						sourceInterface.shutdown();
+						this.getServer().getNetwork().unregisterInterface(sourceInterface);
 					}
 				}
 				this.getLogger().info("[WaterdogTools - Firewall] Shut down all non protected interfaces, OK");
