@@ -1,15 +1,5 @@
 package network.ycc.waterdog.nukkit.Components;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import cn.nukkit.Server;
-import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.utils.Config;
-
 /* 
  * This file is part of the WaterdogTools distribution (https://github.com/yesdog/WaterdogTools).
  * Copyright (c) 2019 Yesdog OSS, a division of YCC Network, LLC
@@ -26,6 +16,16 @@ import cn.nukkit.utils.Config;
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import cn.nukkit.Server;
+import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.Config;
 
 public class WaterdogToolsConfig {
 
