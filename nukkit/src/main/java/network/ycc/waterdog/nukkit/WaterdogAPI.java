@@ -30,6 +30,9 @@ import network.ycc.waterdog.nukkit.Raknet.SecondaryProtectedInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class WaterdogAPI extends PluginBase {
 	private static MainLogger log = Server.getInstance().getLogger();
@@ -42,23 +45,51 @@ public class WaterdogAPI extends PluginBase {
 		this.conf = new WaterdogToolsConfig(this, "config.yml");
 		if (this.conf.isProxyFirewallEnabled()) {
 			this.getLogger().info("[Firewall] Enabling Network-Firewall...");
+			List<String> allowedIPs = this.conf.getProxyAddresses();
+			Map<UUID, Player> online = this.getServer().getOnlinePlayers();
+			if (online != null && !online.isEmpty()) {
+				for (Player p : online.values()) {
+					try {
+						if (!allowedIPs.contains(p.getAddress())) {
+							this.getLogger().info("[Firewall] Kicking non-proxy connected Player " + p.getName());
+							p.kick("Please connect over the proxy.");
+						}
+					} catch (Exception e) {
+						continue;
+					}
+				}
+			}
 			if (!this.conf.isPrimaryFirewallDisabled()) {
+				boolean wasAlreadyregistered = false;
 				for (SourceInterface sourceInterface : this.getServer().getNetwork().getInterfaces()) {
 					if (sourceInterface instanceof RakNetInterface) {
-						sourceInterface.shutdown();
-						this.getServer().getNetwork().unregisterInterface(sourceInterface);
+						if (sourceInterface.getClass().getName().equals(ProtectedRakNetInterface.class.getName())) {
+							try {
+								sourceInterface.getClass().getMethod("reSetAddresses", List.class)
+										.invoke(sourceInterface, allowedIPs);
+								this.getLogger().warning(
+										"[Firewall] Protected interface was already loaded. If this was due to a reload please consider restarting the server in the future as this might create unexpected behaviour!");
+							} catch (Exception e) {
+								this.getLogger().error(
+										"[Firewall] Was unable to reload proxy addresses from the config. Please restart the server to reload them.");
+							}
+							wasAlreadyregistered = true;
+						} else {
+							sourceInterface.shutdown();
+							this.getServer().getNetwork().unregisterInterface(sourceInterface);
+						}
 					}
 				}
 				this.getLogger().info("[Firewall] Shut down all non protected interfaces, OK");
-				this.getServer().getNetwork().registerInterface(
-						new ProtectedRakNetInterface(this.getServer(), this.conf.getProxyAddresses()));
-				this.getLogger().info("[Firewall] Registered Protected RakNet Interface!");
+				if (!wasAlreadyregistered) {
+					this.getServer().getNetwork()
+							.registerInterface(new ProtectedRakNetInterface(this.getServer(), allowedIPs));
+					this.getLogger().info("[Firewall] Registered Protected RakNet Interface!");
+				}
 			} else {
-				this.getLogger()
-						.info("[Firewall] Only using secondary protected interface as configured.");
+				this.getLogger().info("[Firewall] Only using secondary protected interface as configured.");
 			}
-			this.getServer().getPluginManager()
-					.registerEvents(new SecondaryProtectedInterface(this.conf.getProxyAddresses()), this);
+			this.getServer().getPluginManager().registerEvents(new SecondaryProtectedInterface(allowedIPs), this);
 			this.getLogger().info("[Firewall] Registered secondary Protected Interface!");
 		}
 		this.getLogger().info("Done!");
@@ -111,4 +142,3 @@ public class WaterdogAPI extends PluginBase {
 	}
 
 }
-
