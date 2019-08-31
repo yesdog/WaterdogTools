@@ -19,6 +19,8 @@ package network.ycc.waterdog.nukkit;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.command.Command;
+import cn.nukkit.command.CommandSender;
 import cn.nukkit.network.RakNetInterface;
 import cn.nukkit.network.SourceInterface;
 import cn.nukkit.network.protocol.ScriptCustomEventPacket;
@@ -67,11 +69,9 @@ public class WaterdogAPI extends PluginBase {
 							try {
 								sourceInterface.getClass().getMethod("reSetAddresses", List.class)
 										.invoke(sourceInterface, allowedIPs);
-								this.getLogger().warning(
-										"[Firewall] Protected interface was already loaded. If this was due to a reload please consider restarting the server in the future as this might create unexpected behaviour!");
+								this.getLogger().warning("[Firewall] Protected interface was already loaded. If this was due to a reload please consider restarting the server in the future as this might create unexpected behaviour!");
 							} catch (Exception e) {
-								this.getLogger().error(
-										"[Firewall] Was unable to reload proxy addresses from the config. Please restart the server to reload them.");
+								this.getLogger().error("[Firewall] Was unable to reload proxy addresses from the config. Please restart the server to reload them.");
 							}
 							wasAlreadyregistered = true;
 						} else {
@@ -95,7 +95,7 @@ public class WaterdogAPI extends PluginBase {
 		this.getLogger().info("Done!");
 	}
 
-	public static void transferPlayer(Player p, String destination) {
+	public static boolean transferPlayer(Player p, String destination) {
 		ScriptCustomEventPacket pk = new ScriptCustomEventPacket();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		DataOutputStream a = new DataOutputStream(out);
@@ -108,10 +108,12 @@ public class WaterdogAPI extends PluginBase {
 		} catch (Exception e) {
 			log.warning("Error while transferring ( PLAYER: " + p.getName() + " | DEST: " + destination + " )");
 			log.logException(e);
+			return false;
 		}
+		return true;
 	}
 
-	public static void transferOther(String name, String destination) {
+	public static boolean transferOther(String name, String destination) {
 		Player p = getRandomPlayer();
 		if (p != null) {
 			ScriptCustomEventPacket pk = new ScriptCustomEventPacket();
@@ -127,10 +129,13 @@ public class WaterdogAPI extends PluginBase {
 			} catch (Exception e) {
 				log.warning("Error while transferring ( PLAYER: " + p.getName() + " | DEST: " + destination + " )");
 				log.logException(e);
+				return false;
 			}
 		} else {
 			log.info("Cannot execute transfer for player " + name + ": No player online!");
+			return false;
 		}
+		return true;
 	}
 
 	public static Player getRandomPlayer() {
@@ -139,6 +144,61 @@ public class WaterdogAPI extends PluginBase {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		switch (command.getName().toLowerCase()) {
+		case "connectto":
+			if (args.length == 1) {
+				if (sender instanceof Player) {
+					sender.sendMessage("Connecting you to " + args[0]);
+					if (!WaterdogAPI.transferPlayer((Player) sender, args[0]))
+						sender.sendMessage("Connection error! Is the server name incorrect or is the server offline?");
+				} else {
+					sender.sendMessage(
+							"Error! This command can only be used by players! Use /sendto from the console.");
+				}
+			} else {
+				sender.sendMessage("Error! Usage: /connectto <server>");
+			}
+			break;
+		case "sendto":
+			if (args.length == 2) {
+				Player p = null;
+				try {
+					p = this.getServer().getPlayer(args[0]);
+				} catch (Exception e) {
+					p = null;
+				}
+				if (p != null) {
+					sender.sendMessage("Connecting " + p.getName() + " to " + args[1]);
+					if (!WaterdogAPI.transferPlayer(p, args[1]))
+						sender.sendMessage("Connection error! Is the server name incorrect or is the server offline?");
+				} else {
+					sender.sendMessage(
+							"Error! That player is not online! Please use /sendother to transfer network player which are not online here.");
+				}
+			} else {
+				sender.sendMessage("Error! Usage: /sendto <player> <server>");
+			}
+			break;
+		case "sendother":
+			if (args.length == 2) {
+				if (this.getServer().getOnlinePlayers().isEmpty() || this.getServer().getOnlinePlayers().size() <= 0) {
+					sender.sendMessage("Error! This commands needs at least one player on the server to work!");
+				} else {
+					sender.sendMessage("Attempting to transfer " + args[0] + " to " + args[1]);
+					if (!WaterdogAPI.transferOther(args[0], args[1]))
+						sender.sendMessage(
+								"Connection error! Is the target player online and is the server correct and online?");
+				}
+			} else {
+				sender.sendMessage("Error! Usage: /sendother <playername> <server>");
+			}
+			break;
+		}
+		return true;
 	}
 
 }
