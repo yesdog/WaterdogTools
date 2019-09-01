@@ -7,3 +7,33 @@ website: https://github.com/yesdog/WaterdogTools
 
 main: network.ycc.waterdog.nukkit.WaterdogAPI
 load: STARTUP
+
+commands:
+  connectto:
+    description: Waterdog-Proxy transfer command
+    usage: "/connectto <server>"
+    aliases: []
+    permission: waterdog.command.connectto
+    permission-message: "You don't have permission to move servers!"
+  sendto:
+    description: Waterdog-Proxy transfer player-send command
+    usage: "/sendto <player> <server>"
+    aliases: []
+    permission: waterdog.command.sendto
+    permission-message: "You don't have permission to move other players from this server!"
+  sendother:
+    description: Waterdog-Proxy transfer player-send command from any server
+    usage: "/sendother <playername> <server>"
+    aliases: []
+    permission: waterdog.command.sendother
+    permission-message: "You don't have permission to move other players on the network!"
+permissions:
+  waterdog.command.connectto:
+    description: "Allows the user to switch the given server"
+    default: true
+  waterdog.command.sendto:
+    description: "Allows the user to send a player to another server"
+    default: op
+  waterdog.command.sendother:
+    description: "Allows the user to send a player from any server to another server"
+    default: op
